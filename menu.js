@@ -29,7 +29,11 @@ slider.forEach((_, index) => {
   const dot = document.createElement('div');
   dot.classList.add('dot');
   if (index === 0) dot.classList.add('active'); // Ativa a primeira bolinha
-  dot.addEventListener('click', () => goToSlide(index));
+  dot.addEventListener('click', () => {
+    clearInterval(autoSlideInterval); // Interrompe o automático ao clicar em uma bolinha
+    goToSlide(index);
+    startAutoSlide(); // Reinicia o automático
+  });
   dotsContainer.appendChild(dot);
 });
 
@@ -63,6 +67,26 @@ function goToSlide(index) {
   showSlider();
 }
 
-btnNext.addEventListener('click', nextSlider);
-btnPrev.addEventListener('click', prevSlider);
+// Transição automática
+const slideIntervalTime = 3000; // Tempo em milissegundos (5 segundos)
+let autoSlideInterval;
 
+function startAutoSlide() {
+  autoSlideInterval = setInterval(nextSlider, slideIntervalTime);
+}
+
+// Inicializa o slider automático
+startAutoSlide();
+
+// Adiciona eventos de clique nos botões
+btnNext.addEventListener('click', () => {
+  clearInterval(autoSlideInterval); // Interrompe o automático ao clicar em "próximo"
+  nextSlider();
+  startAutoSlide(); // Reinicia o automático
+});
+
+btnPrev.addEventListener('click', () => {
+  clearInterval(autoSlideInterval); // Interrompe o automático ao clicar em "anterior"
+  prevSlider();
+  startAutoSlide(); // Reinicia o automático
+});
